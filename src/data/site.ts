@@ -4,17 +4,17 @@
 // ─────────────────────────────────────────────────────────────
 
 export const site = {
-  name: "Cristian",
+  name: "Cristian Delgado",
   github: "CristianDB1",
   // PENDIENTE: número con indicativo, solo dígitos. Ej: "573001234567".
   // Mientras esté vacío, el botón de WhatsApp no se muestra.
-  whatsapp: "",
+  whatsapp: "573027587770",
   // PENDIENTE: correo de contacto público. Si está vacío, no se muestra.
-  email: "",
+  email: "crdelgadobe@gmail.com",
   // PENDIENTE: ciudad o región (opcional). Ej: "Urabá, Colombia".
-  location: "Colombia",
+  location: "Carepa, Colombia",
   // PENDIENTE: foto tuya. Pon el archivo en public/img/ y escribe la ruta, ej. "img/cristian.jpg".
-  photo: "",
+  photo: "img/cristian.jpg",
   quoteNumber: "0001",
 };
 

@@ -919,7 +919,6 @@ html[data-route="empresa"] .ledger__row[data-routes^="empresa"] {
   border: 0;
   border-bottom: 3px solid var(--ink);
   padding: 0.3rem 0.5rem 0.15rem;
-  border-radius: 0;
   width: 100%;
   resize: vertical;
   transition: background-color 0.2s;
