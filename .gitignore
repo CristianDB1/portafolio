@@ -11,3 +11,5 @@ dist/
 .DS_Store
 .claude/
 public/img/cristian.png
+public/img/catalogo *.png
+public/img/catalogo-demo.jpg

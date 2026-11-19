@@ -1,352 +1,296 @@
 ---
 import Base from "../layouts/Base.astro";
-import { site, routes, services, projects, steps, tools } from "../data/site";
+import { site, facts, services, featured, projects, strengths, steps, tools } from "../data/site";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
-const repoUrl = (repo: string) => `https://github.com/${site.github}/${repo}`;
-const projectById = Object.fromEntries(projects.map((p) => [p.id, p]));
+const img = (p: string) => `${base}/${p}`;
 const year = new Date().getFullYear();
-const hasWhatsapp = Boolean(site.whatsapp);
-const hasEmail = Boolean(site.email);
+
+const icons: Record<string, string> = {
+  bag: '<path d="M6 8h12l-1 12H7L6 8Z"/><path d="M9 8a3 3 0 0 1 6 0"/>',
+  grid: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+  layers: '<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/>',
+  pin: '<path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/>',
+};
+const arrow = '<path d="M7 17 17 7M8 7h9v9"/>';
+const wapp = `https://wa.me/${site.whatsapp}`;
 ---
 
 <Base
-  title="Cristian · Software a la medida para negocios y empresas"
-  description="Desarrollo catálogos con pedidos a WhatsApp, sistemas de gestión, plataformas multi-empresa y trazabilidad con QR para negocios y empresas en Colombia."
+  title="Cristian Delgado · Software a la medida para negocios y empresas"
+  description="Desarrollo tiendas en línea, catálogos con pedidos a WhatsApp, sistemas de gestión y plataformas de trazabilidad para negocios y empresas en Colombia."
 >
-  <header class="strip">
-    <div class="strip__in">
-      <a class="strip__brand" href="#inicio">{site.name} <span>· software</span></a>
+  <header class="nav">
+    <div class="nav__in">
+      <a class="brand" href="#inicio" aria-label="Inicio"><i>C</i>{site.name}</a>
       <nav aria-label="Principal">
         <a href="#servicios">Servicios</a>
         <a href="#proyectos">Proyectos</a>
+        <a href="#sobre-mi">Sobre mí</a>
         <a href="#proceso">Proceso</a>
-        <a href="#contacto">Contacto</a>
       </nav>
-      <a class="btn btn--small" href="#contacto">Cotizar</a>
+      <a class="btn btn--primary btn--small" href="#contacto">Hablemos</a>
     </div>
   </header>
 
   <main>
-    <!-- ───────── Hoja 1: portada ───────── -->
-    <section class="sheet sheet--canary hero" id="inicio" aria-labelledby="hero-title">
-      <div class="hero__band">
-        <p class="hero__id">
-          {site.name} · Desarrollo de software
-          <small>A la medida · {site.location}</small>
-        </p>
-        <p class="numero">
-          Cotización N°
-          <b>{site.quoteNumber}</b>
-        </p>
-      </div>
+    <!-- ───────── Hero ───────── -->
+    <section class="hero" id="inicio">
+      <svg class="hero__waves" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <linearGradient id="wv" x1="0" x2="1">
+            <stop offset="0" stop-color="#3d84ff" stop-opacity="0" />
+            <stop offset="0.5" stop-color="#5f9bff" stop-opacity="0.9" />
+            <stop offset="1" stop-color="#7a6bff" stop-opacity="0.4" />
+          </linearGradient>
+        </defs>
+        <g fill="none" stroke="url(#wv)" stroke-width="1.2">
+          <path d="M0 430C200 330 380 560 600 440S960 250 1200 360" />
+          <path d="M0 460C200 360 380 590 600 470S960 280 1200 390" />
+          <path d="M0 490C200 390 380 620 600 500S960 310 1200 420" />
+          <path d="M0 520C200 420 380 650 600 530S960 340 1200 450" />
+          <path d="M0 550C200 450 380 680 600 560S960 370 1200 480" />
+        </g>
+      </svg>
 
-      <h1 id="hero-title">Del talonario<br />al <em>sistema.</em></h1>
-
-      <div class="hero__form">
-        <fieldset class="tick-group">
-          <legend class="label field-label">Cliente — marca una opción</legend>
-          {
-            (Object.keys(routes) as Array<keyof typeof routes>).map((key, i) => (
-              <label class="tick">
-                <input type="radio" name="route" value={key} checked={i === 0} />
-                <span class="tick__box" aria-hidden="true">
-                  <svg viewBox="0 0 40 40">
-                    <path d="M7 9 L33 33" />
-                    <path d="M33 7 L9 32" />
-                  </svg>
-                </span>
-                <span>{routes[key].label}</span>
-              </label>
-            ))
-          }
-        </fieldset>
-
-        <div>
-          <span class="label field-label">Descripción del trabajo</span>
-          <ul class="lines" id="route-lines" aria-live="polite">
-            {routes.negocio.lines.map((l) => <li>{l}</li>)}
+      <div class="wrap hero__grid">
+        <div class="rv">
+          <h1>
+            Software a la medida que hace <span class="serif">crecer</span> tu negocio
+          </h1>
+          <p class="lead">
+            Soy {site.first}, desarrollador full-stack en {site.location}. Construyo tiendas en línea,
+            sistemas de gestión y plataformas para negocios y empresas, desde la base de datos hasta que
+            queda publicado.
+          </p>
+          <div class="hero__cta">
+            <a class="btn btn--primary" href="#proyectos">
+              Ver proyectos
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </a>
+            <a class="btn" href={wapp} target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+          </div>
+          <ul class="facts">
+            {facts.map((f) => <li><b>{f.value}</b><span>{f.label}</span></li>)}
           </ul>
         </div>
 
-        <div class="hero__sign">
-          <p class="form-lead">
-            Hago catálogos, sistemas de gestión y plataformas que quedan funcionando en línea.
-            Cuéntame qué llevas hoy en papel, en chats o en hojas de cálculo.
-          </p>
-          <div style="display:flex;flex-wrap:wrap;gap:1.25rem;align-items:flex-end">
-            <div class="signature">
-              <span aria-hidden="true">{site.name}</span>
-              <span class="label">Firma</span>
-            </div>
-            <a class="btn btn--solid" href="#contacto">
-              Firmar y pedir cotización
-              <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
-            </a>
+        <div class="stage rv" style="--i:2">
+          <div class="laptop">
+            <div class="laptop__screen"><img src={img("work/nordu-d.jpg")} alt="Tienda en línea de Nordu" width="1280" height="800" fetchpriority="high" /></div>
           </div>
+          <div class="phone phone--b"><img src={img("work/malu-m.jpg")} alt="Tienda en línea de Creaciones Malú en el celular" width="390" height="844" /></div>
+          <div class="phone phone--a"><img src={img("work/catalogo-1.jpg")} alt="Catálogo de comidas con pedidos a WhatsApp en el celular" width="344" height="756" /></div>
+          <p class="status">Disponible para nuevos proyectos</p>
         </div>
       </div>
     </section>
 
-    <!-- ───────── Hoja 2: servicios ───────── -->
-    <section class="sheet" id="servicios" aria-labelledby="serv-title">
-      <span class="copy-tag">Original · Cliente</span>
-      <div class="table-head">
-        <h2 class="form-title" id="serv-title">Detalle del servicio</h2>
-        <div class="filter" role="group" aria-label="Ver servicios para">
-          <button type="button" data-route-btn="negocio">Negocio</button>
-          <button type="button" data-route-btn="empresa">Empresa</button>
+    <!-- ───────── Servicios ───────── -->
+    <section class="sec" id="servicios">
+      <div class="wrap">
+        <div class="sec__head rv">
+          <h2>Lo que puedo <span class="serif">construir</span> para ti</h2>
+          <p class="lead">Para el dueño de un negocio que quiere vender más ordenado, y para la empresa que necesita controlar su operación.</p>
         </div>
-      </div>
-      <p class="form-lead">
-        Lo que puedo construir para ti. Cada renglón apunta a un proyecto real que ya hice.
-      </p>
-
-      <ul class="ledger">
-        {
-          services.map((s) => (
-            <li class="ledger__row" data-routes={s.routes.join(" ")}>
-              <h3>{s.title}</h3>
-              <p>{s.text}</p>
-              <span class="ledger__ref">
-                <a href={`#p-${s.example}`}>
-                  Ver ejemplo
-                  <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M6 13l6 6 6-6" /></svg>
-                </a>
-              </span>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <!-- ───────── Hoja 3: proyectos ───────── -->
-    <section class="sheet sheet--pink" id="proyectos" aria-labelledby="proy-title">
-      <span class="copy-tag">Copia · Trabajos entregados</span>
-      <h2 class="form-title" id="proy-title">Ítems despachados</h2>
-      <p class="form-lead">
-        Proyectos reales, con el código abierto para que lo revises. Sin maquetas.
-      </p>
-
-      <ol class="dispatch">
-        {
-          projects.map((p) => (
-            <li class="dispatch__item" id={`p-${p.id}`}>
-              <span class="dispatch__qty" aria-hidden="true" />
-              <div>
-                <h3>{p.name}</h3>
-                <p>{p.summary}</p>
-                <ul class="stack" aria-label="Tecnologías">
-                  {p.stack.map((t) => <li>{t}</li>)}
-                </ul>
-              </div>
-              <div class="dispatch__side">
-                {p.image && (
-                  <figure class="dispatch__photo">
-                    <img src={`${base}/${p.image}`} alt="" width="640" height="480" loading="lazy" decoding="async" />
-                    <figcaption>{p.imageNote}</figcaption>
-                  </figure>
-                )}
-                <a class="btn btn--ink" href={repoUrl(p.repo)} target="_blank" rel="noopener noreferrer">
-                  Ver código
-                  <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7M8 7h9v9" /></svg>
-                </a>
-              </div>
-            </li>
-          ))
-        }
-      </ol>
-    </section>
-
-    <!-- ───────── Hoja 4: proceso ───────── -->
-    <section class="sheet sheet--mint" id="proceso" aria-labelledby="proc-title">
-      <span class="copy-tag">Copia · Condiciones</span>
-      <h2 class="form-title" id="proc-title">Cómo trabajamos</h2>
-
-      <div class="cond">
-        <ol class="steps">
+        <ul class="cards">
           {
-            steps.map((s) => (
-              <li>
-                <span class="tick__box" aria-hidden="true">
-                  <svg viewBox="0 0 40 40">
-                    <path d="M7 9 L33 33" />
-                    <path d="M33 7 L9 32" />
-                  </svg>
+            services.map((s, i) => (
+              <li class="card rv" style={`--i:${i}`}>
+                <span class="card__ico">
+                  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" set:html={icons[s.icon]} />
                 </span>
                 <h3>{s.title}</h3>
                 <p>{s.text}</p>
+                <span class="chip">Para {s.for.toLowerCase()}</span>
               </li>
             ))
           }
-        </ol>
-
-        <aside class="who">
-          <span class="label">Quién firma</span>
-          {
-            site.photo && (
-              <figure class="who__photo">
-                <img src={`${base}/${site.photo}`} alt={`Retrato de ${site.name}`} width="400" height="400" loading="lazy" />
-              </figure>
-            )
-          }
-          <p>
-            Soy {site.name}, desarrollador full-stack. Trabajas directo conmigo: quien te escucha es quien
-            programa y quien responde cuando algo falla.
-          </p>
-          <ul class="tools" aria-label="Herramientas">
-            {tools.map((t) => <li>{t}</li>)}
-          </ul>
-        </aside>
+        </ul>
       </div>
     </section>
 
-    <!-- ───────── Hoja 5: contacto ───────── -->
-    <section class="sheet" id="contacto" aria-labelledby="cont-title">
-      <span class="copy-tag">Original · Firma de recibido</span>
-      <div class="hero__band" style="border:0;padding:0">
-        <h2 class="form-title" id="cont-title" style="margin-top:1.5rem">Pide tu cotización</h2>
-        <p class="numero">
-          Cotización N°
-          <b>{site.quoteNumber}</b>
-        </p>
+    <!-- ───────── Proyectos ───────── -->
+    <section class="sec" id="proyectos" style="padding-top:1rem">
+      <div class="wrap">
+        <div class="sec__head rv">
+          <h2>Proyectos <span class="serif">recientes</span></h2>
+          <p class="lead">Sistemas reales, algunos funcionando hoy para negocios de la región. Los que tienen código privado te los muestro en una llamada.</p>
+        </div>
+
+        <article class="feature rv">
+          <div class="feature__shots">
+            <div class="laptop">
+              <div class="laptop__screen"><img src={img("work/admin-d.jpg")} alt="Panel de administración de Ecosistema Digital" width="1280" height="800" loading="lazy" /></div>
+            </div>
+            <div class="phone phone--b"><img src={img("work/nordu-m.jpg")} alt="Nordu en el celular" width="390" height="844" loading="lazy" /></div>
+            <div class="phone"><img src={img("work/malu-m.jpg")} alt="Malu en el celular" width="390" height="844" loading="lazy" /></div>
+          </div>
+          <div class="feature__body">
+            <span class="tag">{featured.tag}</span>
+            <h3>{featured.name}</h3>
+            <p>{featured.summary}</p>
+            <ul class="stack" aria-label="Tecnologías">
+              {featured.stack.map((t) => <li class="chip">{t}</li>)}
+            </ul>
+            <div class="links">
+              {
+                featured.links.map((l, i) => (
+                  <a class={`btn btn--small${i === 0 ? " btn--primary" : ""}`} href={l.href} target="_blank" rel="noopener noreferrer">
+                    {l.label}
+                    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" set:html={arrow} />
+                  </a>
+                ))
+              }
+            </div>
+          </div>
+        </article>
+
+        <ul class="grid">
+          {
+            projects.map((p, i) => (
+              <li class="work rv" style={`--i:${i % 3}`}>
+                {p.image ? (
+                  <div class="work__media"><img src={img(p.image)} alt={p.imageAlt} width="640" height="400" loading="lazy" /></div>
+                ) : (
+                  <div class="work__media work__media--empty" aria-hidden="true"><span>{p.name.split(" ").map((w) => w[0]).join("").slice(0, 2)}</span></div>
+                )}
+                <div class="work__body">
+                  <span class="tag">{p.tag}</span>
+                  <h3>{p.name}</h3>
+                  <p>{p.summary}</p>
+                  <ul class="stack" aria-label="Tecnologías">
+                    {p.stack.map((t) => <li class="chip">{t}</li>)}
+                  </ul>
+                  <div class="work__foot">
+                    {p.links.map((l) => (
+                      <a class="btn btn--small" href={l.href} target="_blank" rel="noopener noreferrer">
+                        {l.label}
+                        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" set:html={arrow} />
+                      </a>
+                    ))}
+                    {p.note && <span class="note">{p.note}</span>}
+                  </div>
+                </div>
+              </li>
+            ))
+          }
+        </ul>
       </div>
+    </section>
 
-      <div class="sign" id="sign-wrap">
-        <form id="quote-form" novalidate>
-          <div class="in">
-            <label class="label" for="f-name">Tu nombre</label>
-            <input id="f-name" type="text" autocomplete="name" placeholder="Ej. María Pérez" />
-          </div>
-          <div class="in">
-            <label class="label" for="f-biz">Negocio o empresa</label>
-            <input id="f-biz" type="text" autocomplete="organization" placeholder="Ej. Panadería La Esquina" />
-          </div>
-          <div class="in">
-            <label class="label" for="f-need">¿Qué necesitas?</label>
-            <textarea id="f-need" rows="3" placeholder="Cuéntame en pocas palabras qué quieres resolver"></textarea>
-          </div>
-          <div class="sign__actions">
-            {
-              hasWhatsapp && (
-                <button class="btn btn--solid" type="button" data-send="whatsapp">
-                  Enviar por WhatsApp
-                </button>
-              )
-            }
-            {
-              hasEmail && (
-                <button class="btn btn--ink" type="button" data-send="email">
-                  Enviar por correo
-                </button>
-              )
-            }
-            {!hasWhatsapp && !hasEmail && <button class="btn btn--solid" type="button" data-send="copy">Copiar mensaje</button>}
-          </div>
-        </form>
-
-        <div class="stampbox" id="stampbox">
-          <div>
-            <span class="label">Así llegará tu mensaje</span>
-            <p class="preview" id="preview" aria-live="polite"></p>
-          </div>
-          <span class="stamp" aria-hidden="true">Recibido</span>
+    <!-- ───────── Sobre mí (interludio claro) ───────── -->
+    <section class="about" id="sobre-mi">
+      <svg class="wave wave--top" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h1440v30C1200 100 1000 -10 740 40S260 100 0 30Z" /></svg>
+      <div class="wrap about__grid">
+        <figure class="about__photo rv">
+          <img src={img(site.photo)} alt={`Retrato de ${site.name}`} width="640" height="640" loading="lazy" />
+        </figure>
+        <div class="rv" style="--i:2">
+          <h2>El código es mi medio, <span class="serif">tu negocio</span> es mi razón</h2>
+          <p class="lead">
+            Soy {site.name}, desarrollador full-stack en {site.location}. Trabajo directo con los dueños: me
+            cuentas qué te frena hoy y lo convierto en un sistema que usas todos los días.
+          </p>
+          <ul class="strengths">
+            {strengths.map((s) => <li><h3>{s.title}</h3><p>{s.text}</p></li>)}
+          </ul>
         </div>
       </div>
+      <svg class="wave wave--bottom" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0 0h1440v30C1200 100 1000 -10 740 40S260 100 0 30Z" /></svg>
+    </section>
 
-      <p class="alt-contact">
-        <a href={`https://github.com/${site.github}`} target="_blank" rel="noopener noreferrer">GitHub · {site.github}</a>
-      </p>
+    <!-- ───────── Tecnologías ───────── -->
+    <section class="sec" style="padding-bottom:1rem">
+      <div class="wrap">
+        <div class="sec__head rv">
+          <h2>Tecnologías con las que <span class="serif">trabajo</span></h2>
+          <p class="lead">Herramientas modernas y probadas, elegidas según lo que tu proyecto necesita.</p>
+        </div>
+        <ul class="tools rv">
+          {tools.map((t) => <li>{t}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <!-- ───────── Proceso ───────── -->
+    <section class="sec" id="proceso">
+      <div class="wrap">
+        <div class="sec__head rv">
+          <h2>Cómo <span class="serif">trabajamos</span></h2>
+        </div>
+        <ol class="steps">
+          {steps.map((s, i) => <li class="rv" style={`--i:${i}`}><h3>{s.title}</h3><p>{s.text}</p></li>)}
+        </ol>
+      </div>
+    </section>
+
+    <!-- ───────── Contacto ───────── -->
+    <section class="sec" id="contacto" style="padding-top:1rem">
+      <div class="wrap">
+        <div class="cta rv">
+          <div>
+            <h2>¿Tienes un <span class="serif">proyecto</span> en mente?</h2>
+            <p class="lead" style="margin-top:1.1rem">
+              Cuéntame qué quieres resolver. Te respondo directo, sin intermediarios.
+            </p>
+            <div class="links">
+              <a class="btn btn--primary" href={wapp} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+              <a class="btn" href={`mailto:${site.email}`}>Correo</a>
+              <a class="btn" href={`https://github.com/${site.github}`} target="_blank" rel="noopener noreferrer">GitHub</a>
+            </div>
+          </div>
+          <form class="form" id="quote" novalidate>
+            <div class="field">
+              <label for="f-name">Tu nombre</label>
+              <input id="f-name" type="text" autocomplete="name" placeholder="María Pérez" />
+            </div>
+            <div class="field">
+              <label for="f-need">¿Qué necesitas?</label>
+              <textarea id="f-need" rows="3" placeholder="Un catálogo para mi tienda, un sistema para mi empresa…"></textarea>
+            </div>
+            <button class="btn btn--primary" type="submit">
+              Enviar por WhatsApp
+              <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
+            </button>
+          </form>
+        </div>
+      </div>
     </section>
   </main>
 
   <footer class="foot">
-    <p>© {year} {site.name}. Software a la medida.</p>
-    <p>
-      <a href={`https://github.com/${site.github}`} target="_blank" rel="noopener noreferrer">Código de esta página y mis proyectos en GitHub</a>
-    </p>
+    <div class="wrap">
+      <p>© {year} {site.name} · {site.location}</p>
+      <p><a href={`https://github.com/${site.github}`} target="_blank" rel="noopener noreferrer">github.com/{site.github}</a></p>
+    </div>
   </footer>
 
-  <script
-    is:inline
-    define:vars={{ routes, whatsapp: site.whatsapp, email: site.email, quote: site.quoteNumber }}
-  >
-    const root = document.documentElement;
-    const lines = document.getElementById("route-lines");
-    const radios = document.querySelectorAll('input[name="route"]');
-    const btns = document.querySelectorAll("[data-route-btn]");
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    function setRoute(key, { animate = true } = {}) {
-      root.dataset.route = key;
-      radios.forEach((r) => (r.checked = r.value === key));
-      btns.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.routeBtn === key)));
-      const items = lines.querySelectorAll("li");
-      routes[key].lines.forEach((t, i) => (items[i].textContent = t));
-      if (animate && !reduce) {
-        lines.classList.remove("is-writing");
-        void lines.offsetWidth;
-        lines.classList.add("is-writing");
-      }
-      updatePreview();
-    }
-
-    radios.forEach((r) => r.addEventListener("change", () => setRoute(r.value)));
-    btns.forEach((b) =>
-      b.addEventListener("click", () => {
-        const same = root.dataset.route === b.dataset.routeBtn && b.getAttribute("aria-pressed") === "true";
-        setRoute(b.dataset.routeBtn, { animate: !same });
-        document.getElementById("inicio").scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
-      }),
-    );
-
-    const f = {
-      name: document.getElementById("f-name"),
-      biz: document.getElementById("f-biz"),
-      need: document.getElementById("f-need"),
-    };
-    const preview = document.getElementById("preview");
-
-    function message() {
-      const who = f.name.value.trim() || "…";
-      const biz = f.biz.value.trim();
-      const need = f.need.value.trim() || "…";
-      const kind = root.dataset.route === "empresa" ? "una empresa" : "un negocio";
-      return (
-        `Hola Cristian, soy ${who}` +
-        (biz ? ` de ${biz}` : "") +
-        `. Tengo ${kind} y quiero cotizar: ${need}\n(Cotización N° ${quote})`
+  <script is:inline define:vars={{ whatsapp: site.whatsapp, first: site.first }}>
+    document.documentElement.classList.add("js");
+    const els = document.querySelectorAll(".rv");
+    if ("IntersectionObserver" in window) {
+      const io = new IntersectionObserver(
+        (entries) =>
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add("in");
+              io.unobserve(e.target);
+            }
+          }),
+        { threshold: 0.12, rootMargin: "0px 0px -6% 0px" },
       );
+      els.forEach((el) => io.observe(el));
+    } else {
+      els.forEach((el) => el.classList.add("in"));
     }
-    function updatePreview() {
-      preview.textContent = message();
-    }
-    Object.values(f).forEach((el) => el.addEventListener("input", updatePreview));
 
-    document.querySelectorAll("[data-send]").forEach((btn) =>
-      btn.addEventListener("click", () => {
-        const text = message();
-        const kind = btn.dataset.send;
-        const box = document.getElementById("stampbox");
-        box.classList.remove("stamped");
-        void box.offsetWidth;
-        box.classList.add("stamped");
-        const go = () => {
-          if (kind === "whatsapp") {
-            window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
-          } else if (kind === "email") {
-            location.href = `mailto:${email}?subject=${encodeURIComponent("Cotización N° " + quote)}&body=${encodeURIComponent(text)}`;
-          } else {
-            navigator.clipboard?.writeText(text);
-          }
-        };
-        reduce ? go() : setTimeout(go, 650);
-      }),
-    );
-
-    setRoute("negocio", { animate: false });
-    if (!reduce) {
-      lines.classList.add("is-writing");
-    }
+    document.getElementById("quote").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const name = document.getElementById("f-name").value.trim();
+      const need = document.getElementById("f-need").value.trim();
+      const text = `Hola ${first}, soy ${name || "…"}. Quiero cotizar: ${need || "…"}`;
+      window.open(`https://wa.me/${whatsapp}?text=${encodeURIComponent(text)}`, "_blank", "noopener");
+    });
   </script>
 </Base>
