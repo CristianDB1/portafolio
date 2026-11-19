@@ -1,6 +1,6 @@
 ---
 import Base from "../layouts/Base.astro";
-import { site, facts, services, featured, projects, strengths, steps, tools } from "../data/site";
+import { site, facts, services, cases, hobby, others, strengths, steps, tools } from "../data/site";
 
 const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 const img = (p: string) => `${base}/${p}`;
@@ -114,68 +114,105 @@ const wapp = `https://wa.me/${site.whatsapp}`;
     <section class="sec" id="proyectos" style="padding-top:1rem">
       <div class="wrap">
         <div class="sec__head rv">
-          <h2>Proyectos <span class="serif">recientes</span></h2>
-          <p class="lead">Sistemas reales, algunos funcionando hoy para negocios de la región. Los que tienen código privado te los muestro en una llamada.</p>
+          <h2>Proyectos <span class="serif">destacados</span></h2>
+          <p class="lead">Sistemas reales, algunos funcionando hoy para negocios de la región. Cambia de pestaña para ver más pantallas de cada uno.</p>
         </div>
 
-        <article class="feature rv">
-          <div class="feature__shots">
-            <div class="laptop">
-              <div class="laptop__screen"><img src={img("work/admin-d.jpg")} alt="Panel de administración de Ecosistema Digital" width="1280" height="800" loading="lazy" /></div>
-            </div>
-            <div class="phone phone--b"><img src={img("work/nordu-m.jpg")} alt="Nordu en el celular" width="390" height="844" loading="lazy" /></div>
-            <div class="phone"><img src={img("work/malu-m.jpg")} alt="Malu en el celular" width="390" height="844" loading="lazy" /></div>
-          </div>
-          <div class="feature__body">
-            <span class="tag">{featured.tag}</span>
-            <h3>{featured.name}</h3>
-            <p>{featured.summary}</p>
-            <ul class="stack" aria-label="Tecnologías">
-              {featured.stack.map((t) => <li class="chip">{t}</li>)}
-            </ul>
-            <div class="links">
-              {
-                featured.links.map((l, i) => (
-                  <a class={`btn btn--small${i === 0 ? " btn--primary" : ""}`} href={l.href} target="_blank" rel="noopener noreferrer">
-                    {l.label}
-                    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" set:html={arrow} />
-                  </a>
-                ))
-              }
-            </div>
-          </div>
-        </article>
-
-        <ul class="grid">
+        <div class="cases">
           {
-            projects.map((p, i) => (
-              <li class="work rv" style={`--i:${i % 3}`}>
-                {p.image ? (
-                  <div class="work__media"><img src={img(p.image)} alt={p.imageAlt} width="640" height="400" loading="lazy" /></div>
-                ) : (
-                  <div class="work__media work__media--empty" aria-hidden="true"><span>{p.name.split(" ").map((w) => w[0]).join("").slice(0, 2)}</span></div>
-                )}
-                <div class="work__body">
-                  <span class="tag">{p.tag}</span>
-                  <h3>{p.name}</h3>
-                  <p>{p.summary}</p>
-                  <ul class="stack" aria-label="Tecnologías">
-                    {p.stack.map((t) => <li class="chip">{t}</li>)}
+            cases.map((c, ci) => (
+              <article class={`case rv${ci % 2 ? " case--rev" : ""}`} data-case>
+                <div class="case__text">
+                  <span class="tag">{c.tag}</span>
+                  <h3>{c.name}</h3>
+                  <p>{c.summary}</p>
+                  <ul class="points">
+                    {c.points.map((t) => <li>{t}</li>)}
                   </ul>
-                  <div class="work__foot">
-                    {p.links.map((l) => (
-                      <a class="btn btn--small" href={l.href} target="_blank" rel="noopener noreferrer">
+                  <ul class="stack" aria-label="Tecnologías">
+                    {c.stack.map((t) => <li class="chip">{t}</li>)}
+                  </ul>
+                  <div class="links">
+                    {c.links.map((l, i) => (
+                      <a class={`btn btn--small${i === 0 ? " btn--primary" : ""}`} href={l.href} target="_blank" rel="noopener noreferrer">
                         {l.label}
                         <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" set:html={arrow} />
                       </a>
                     ))}
-                    {p.note && <span class="note">{p.note}</span>}
+                    {c.note && <span class="note">{c.note}</span>}
                   </div>
                 </div>
-              </li>
+
+                <div class={`viewer${c.shots.every((x) => x.device === "phone") ? " viewer--phones" : ""}`}>
+                  <div class="viewer__stage">
+                    {c.shots.map((sh, i) => (
+                      <div class={`shot${i === 0 ? " on" : ""}`} data-shot role="tabpanel" aria-hidden={i === 0 ? "false" : "true"}>
+                        {sh.device === "laptop" ? (
+                          <div class="laptop"><div class="laptop__screen"><img src={img(sh.src)} alt={sh.alt} width="1280" height="800" loading="lazy" decoding="async" /></div></div>
+                        ) : (
+                          <div class="phone"><img src={img(sh.src)} alt={sh.alt} width="390" height="844" loading="lazy" decoding="async" /></div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                  <div class="viewer__bar">
+                    <div class="tabs" role="tablist" aria-label={`Pantallas de ${c.name}`}>
+                      {c.shots.map((sh, i) => (
+                        <button type="button" role="tab" class={`tab${i === 0 ? " on" : ""}`} aria-selected={i === 0 ? "true" : "false"} data-tab>{sh.label}</button>
+                      ))}
+                    </div>
+                    <div class="arrows">
+                      <button type="button" class="arrow-btn" data-prev aria-label="Pantalla anterior"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg></button>
+                      <button type="button" class="arrow-btn" data-next aria-label="Pantalla siguiente"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg></button>
+                    </div>
+                  </div>
+                </div>
+              </article>
             ))
           }
-        </ul>
+        </div>
+
+        <article class="hobby rv">
+          <div class="hobby__media"><img src={img(hobby.image)} alt={hobby.imageAlt} width="1280" height="520" loading="lazy" decoding="async" /></div>
+          <div>
+            <span class="tag">{hobby.tag}</span>
+            <h3>{hobby.name}</h3>
+            <p>{hobby.summary}</p>
+            <ul class="points">{hobby.points.map((t) => <li>{t}</li>)}</ul>
+            <ul class="stack" aria-label="Tecnologías">{hobby.stack.map((t) => <li class="chip">{t}</li>)}</ul>
+            <div class="links">
+              {hobby.links.map((l, i) => (
+                <a class={`btn btn--small${i === 0 ? " btn--primary" : ""}`} href={l.href} target="_blank" rel="noopener noreferrer">
+                  {l.label}
+                  <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" set:html={arrow} />
+                </a>
+              ))}
+            </div>
+          </div>
+        </article>
+
+        <div class="others rv">
+          <h3>También he construido</h3>
+          <ul>
+            {others.map((o) => (
+              <li>
+                <div>
+                  <b>{o.name}</b>
+                  <p>{o.text}</p>
+                </div>
+                <ul class="stack" aria-label="Tecnologías">{o.stack.map((t) => <li class="chip">{t}</li>)}</ul>
+                {o.link ? (
+                  <a class="btn btn--small" href={o.link.href} target="_blank" rel="noopener noreferrer">
+                    {o.link.label}
+                    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" set:html={arrow} />
+                  </a>
+                ) : (
+                  <span class="note">{o.note}</span>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -284,6 +321,35 @@ const wapp = `https://wa.me/${site.whatsapp}`;
     } else {
       els.forEach((el) => el.classList.add("in"));
     }
+
+    document.querySelectorAll("[data-case]").forEach((root) => {
+      const shots = [...root.querySelectorAll("[data-shot]")];
+      const tabs = [...root.querySelectorAll("[data-tab]")];
+      let cur = 0;
+      const go = (n, focus) => {
+        cur = (n + shots.length) % shots.length;
+        shots.forEach((el, i) => {
+          el.classList.toggle("on", i === cur);
+          el.setAttribute("aria-hidden", String(i !== cur));
+        });
+        tabs.forEach((t, i) => {
+          t.classList.toggle("on", i === cur);
+          t.setAttribute("aria-selected", String(i === cur));
+          t.tabIndex = i === cur ? 0 : -1;
+        });
+        if (focus) tabs[cur].focus();
+      };
+      tabs.forEach((t, i) => {
+        t.tabIndex = i === 0 ? 0 : -1;
+        t.addEventListener("click", () => go(i));
+        t.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowRight") { e.preventDefault(); go(cur + 1, true); }
+          if (e.key === "ArrowLeft") { e.preventDefault(); go(cur - 1, true); }
+        });
+      });
+      root.querySelector("[data-prev]").addEventListener("click", () => go(cur - 1));
+      root.querySelector("[data-next]").addEventListener("click", () => go(cur + 1));
+    });
 
     document.getElementById("quote").addEventListener("submit", (e) => {
       e.preventDefault();
